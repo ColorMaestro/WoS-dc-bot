@@ -3,64 +3,14 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 import sys
 import os
-import subprocess
-
-def check_and_install_requirements():
-    required_packages = {
-        'discord.py': 'discord.py',
-        'colorama': 'colorama',
-        'requests': 'requests',
-        'aiohttp': 'aiohttp',
-        'python-dotenv': 'python-dotenv',
-        'aiohttp-socks': 'aiohttp-socks',
-        'pytz': 'pytz',
-        'pyzipper': 'pyzipper'
-    }
-    
-    def install_package(package_name):
-        try:
-            print(f"Installing {package_name}...")
-            subprocess.check_call([sys.executable, "-m", "pip", "install", package_name])
-            print(f"{package_name} installed successfully.")
-            return True
-        except subprocess.CalledProcessError:
-            print(f"Error installing {package_name}.")
-            return False
-
-    packages_to_install = []
-    try:
-        import pkg_resources
-        installed_packages = {pkg.key for pkg in pkg_resources.working_set}
-    except ImportError:
-        install_package('setuptools')
-        import pkg_resources
-        installed_packages = {pkg.key for pkg in pkg_resources.working_set}
-
-    for package, pip_name in required_packages.items():
-        if package.lower() not in installed_packages:
-            packages_to_install.append(pip_name)
-
-    if packages_to_install:
-        print("Missing libraries detected. Starting installation...")
-        for package in packages_to_install:
-            success = install_package(package)
-            if not success:
-                print(f"Some libraries could not be installed. Please run pip install {package} manually.")
-                sys.exit(1)
-        print("All required libraries installed!")
-        return True
-    return False
 
 if __name__ == "__main__":
-    check_and_install_requirements()
-    
     import discord
     from discord.ext import commands
     import sqlite3
     from colorama import Fore, Style, init
     import requests
     import asyncio
-    import pkg_resources
 
     VERSION_URL = "https://raw.githubusercontent.com/Reloisback/Whiteout-Survival-Discord-Bot/refs/heads/main/autoupdateinfo.txt"
 
@@ -360,9 +310,6 @@ if __name__ == "__main__":
             print(f"Error syncing commands: {e}")
 
     async def main():
-        if check_and_install_requirements():
-            print(f"{Fore.GREEN}Library installations completed, starting bot...{Style.RESET_ALL}")
-        
         await check_and_update_files()
         await load_cogs()
         await bot.start(bot_token)
