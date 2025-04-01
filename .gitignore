@@ -1,3 +1,5 @@
 /.idea
 /db
 bot_token.txt
+/log
+/giftcode_logs
